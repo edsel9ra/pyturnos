@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <div class="container py-3">
+        <div class="row">
+            <h3 class="text-center">Para exportar a un archivo de Excel, debe ingresar la información solicitada y dar en el botón "Exportar Excel".</h3>
+            <div class="d-flex justify-content-center col-6 offset-3">
+                <form method="POST" action="{% url 'buscar_turnos_fecha' %}" class="card card-body text-center">
+                    {% csrf_token %}
+                    <label for="fecha_inicial">Desde:</label>
+                    <input type="date" id="fecha_inicial" name="fecha_inicial" required>
+                    <label for="fecha_final">Hasta:</label>
+                    <input type="date" id="fecha_final" name="fecha_final" required>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </form>
+                <form method="GET" action="{% url 'exportar_turnos_fecha_excel' %}" class="card card-body text-center">
+                    {% csrf_token %}
+                    <label for="fecha_inicial">Desde:</label>
+                    <input type="date" id="fecha_inicial" name="fecha_inicial" required>
+                    <label for="fecha_final">Hasta:</label>
+                    <input type="date" id="fecha_final" name="fecha_final" required>
+                    <button type="submit" class="btn btn-success" action="{% url 'exportar_turnos_fecha_excel' %}">Exportar Excel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container py-3 table-responsive">
+        {% if turnos_programados %}
+        <div class="container py-5">
+            <h1 class="text-center">Resultados de Busqueda</h1>
+            <table class="table table-bordered text-center table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th>ID Turno</th>
+                        <th>Empleado</th>
+                        <th>Nombre</th>
+                        <th>Turno Programado</th>
+                        <th>Fecha Turno</th>
+                        <th>Justificación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for turno in turnos_programados %}
+                    <tr>
+                        <td>{{turno.id_turno_programado}}</td>
+                        <td>{{ turno.empleado.id_empleado }}</td>
+                        <td>{{ turno.empleado.nombre_empleado }} {{ turno.empleado.apellido_paterno_empleado }} {{ turno.empleado.apellido_materno_empleado }}</td>
+                        <td>{{ turno.turno }}</td>
+                        <td>{{ turno.fecha_turno|date:"d-m-Y" }}</td>
+                        <td>{{ turno.justificacion }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h1 class="text-center">No hay turnos programados para mostrar, realice una busqueda.</h1>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

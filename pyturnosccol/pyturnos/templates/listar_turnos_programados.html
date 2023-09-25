@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="text-center display-3 py-3">Turnos Programados</h1>
+    <div class="container py-5">
+        {% if turnos_programados %}
+        <table class="table table-bordered text-center table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>ID Turno</th>
+                    <th>Empleado</th>
+                    <th>Nombre</th>
+                    <th>Turno Programado</th>
+                    <th>Fecha Turno</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for turno_programado in turnos_programados %}
+                <tr>
+                    <td>{{turno_programado.id_turno_programado}}</td>
+                    <td>{{ turno_programado.empleado.id_empleado }}</td>
+                    <td>{{ turno_programado.empleado.nombre_empleado }} {{ turno_programado.empleado.apellido_paterno_empleado }} {{ turno_programado.empleado.apellido_materno_empleado }}</td>
+                    <td>{{ turno_programado.turno }}</td>
+                    <td>{{ turno_programado.fecha_turno|date:"d-m-Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <h1 class="text-center">No hay turnos programados para mostrar, realice una busqueda.</h1>
+        {% endif %}
+{% endblock %}

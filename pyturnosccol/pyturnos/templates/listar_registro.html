@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="text-center display-3 py-3">Registros Turnos Biometrico</h1>
+    <div class="container py-5">
+        {% if registros %}
+        <table class="table table-bordered text-center table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Registro</th>
+                    <th>Documento</th>
+                    <!--<th>Nombres</th>-->
+                    <!--<th>Apellidos</th>-->
+                    <th>Turno Programado</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Turno Ingreso</th>
+                    <th>Justificación</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                <tr>
+                    <td>{{registro.id_registro}}</td>
+                    <td>{{ registro.empleado.id_empleado }}</td>
+                    <!--<td>{{ registro.empleado.nombre_empleado }}</td>-->
+                    <!--<td>{{ registro.empleado.apellido_paterno_empleado }} {{registro.empleado.apellido_materno_empleado}}</td>-->
+                    <td>{{ registro.turno_programado }}</td>
+                    <td>{{ registro.fecha_registro_entrada|date:"d-m-Y" }} - {{registro.hora_registro_entrada|time:"H:i"}}</td>
+                    <td>{{ registro.fecha_registro_salida|date:"d-m-Y" }} - {{registro.hora_registro_salida|time:"H:i"}}</td>
+                    <td>{{ registro.turno }}</td>
+                    <td>{{ registro.justificacion }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <h1 class="text-center">No hay registros para mostrar</h1>
+        {% endif %}
+    </div>
+{% endblock %}

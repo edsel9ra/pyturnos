@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <div class="container py-3">
+        <div class="row">
+            <h3 class="text-center">Para exportar a un archivo de Excel, debe ingresar la información solicitada y dar en el botón "Exportar Excel".</h3>
+            <div class="d-flex justify-content-center col-6 offset-3">
+                <form method="POST" action="{% url 'buscar_rango_fecha' %}" class="card card-body text-center">
+                    {% csrf_token %}
+                    <label for="fecha_inicial">Desde:</label>
+                    <input type="date" id="fecha_inicial" name="fecha_inicial" required>
+                    <label for="fecha_final">Hasta:</label>
+                    <input type="date" id="fecha_final" name="fecha_final" required>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </form>
+                <form method="GET" action="{% url 'exportar_registros_fecha_excel' %}" class="card card-body text-center">
+                    {% csrf_token %}
+                    <label for="fecha_inicial">Desde:</label>
+                    <input type="date" id="fecha_inicial" name="fecha_inicial" required>
+                    <label for="fecha_final">Hasta:</label>
+                    <input type="date" id="fecha_final" name="fecha_final" required>
+                    <button type="submit" class="btn btn-success">Exportar Excel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container py-3 table-responsive">
+        {% if registros %}
+        <h1 class="text-center">Resultados de Busqueda</h1>
+        <table class="table table-bordered text-center table-sm align-middle">
+            <thead class="table-dark align-middle">
+                <tr>
+                    <!--<th>Registro</th>-->
+                    <th>Documento</th>
+                    <!--<th>Nombres</th>-->
+                    <!--<th>Apellidos</th>-->
+                    <th>Turno Programado</th>
+                    <th>Turno Ingreso</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Justificación</th>
+                    <th>Marcación</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Análisis</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                <tr>
+                    <td>{{ registro.empleado.id_empleado }}</td>
+                    <!--<td>{{ registro.empleado.nombre_empleado }}</td>-->
+                    <!--<td>{{ registro.empleado.apellido_paterno_empleado }} {{registro.empleado.apellido_materno_empleado}}</td>-->
+                    <td>{{ registro.turno_programado.fecha_turno|date:"d-m-Y" }} / {{ registro.turno_programado.turno.hora_inicial|time:"H:i" }} - {{ registro.turno_programado.turno.hora_final|time:"H:i" }}</td>
+                    <td>{{ registro.turno }}</td>
+                    <td>Fecha: {{ registro.fecha_registro_entrada|date:"d-m-Y" }}<br>Hora: {{registro.hora_registro_entrada|time:"H:i"}}</td>
+                    <td>Fecha: {{ registro.fecha_registro_salida|date:"d-m-Y" }}<br>Hora: {{registro.hora_registro_salida|time:"H:i"}}</td>
+                    <td>{{ registro.justificacion }}</td>
+                    <td class="{% if registro.obs_marcacion == 'OK' %}table-success
+                        {% elif registro.obs_marcacion == 'Sin marcación' %}table-danger
+                        {% elif registro.obs_marcacion == 'Solamente marcó entrada' %}table-warning
+                        {% elif registro.obs_marcacion == 'Solamente marcó salida' %}table-warning
+                        {% else %}table-info
+                        {% endif %}">{{ registro.obs_marcacion }}</td>
+                    <td class="{% if registro.obs_entrada == 'OK' %}table-success
+                        {% elif registro.obs_entrada == 'No marcó entrada' %}table-danger
+                        {% elif registro.obs_entrada == 'Llego Tarde' %}table-warning
+                        {% else %}table-info
+                        {% endif %}">{{ registro.obs_entrada }}</td>
+                    <td class="{% if registro.obs_salida == 'OK' %}table-success
+                        {% elif registro.obs_salida == 'No marcó salida' %}table-danger
+                        {% elif registro.obs_salida == 'Sale antes de hora' %}table-warning
+                        {% else %}table-info
+                        {% endif %}">{{ registro.obs_salida }}</td>
+                    <td class="{% if registro.analisis == 'OK' %}table-success
+                        {% elif registro.analisis == 'Ausentismo' %}table-danger
+                        {% elif registro.analisis == 'Revisar Marcaciones' %}table-warning
+                        {% elif registro.analisis == 'Revisar Situación' %}table-warning
+                        {% elif registro.analisis == 'Revisar Motivo de llegada tarde' %}table-warning
+                        {% else %}table-info
+                        {% endif %}">{{ registro.analisis }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <h1 class="text-center">No hay registros para mostrar, realice una busqueda</h1>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

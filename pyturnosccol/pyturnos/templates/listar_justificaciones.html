@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="text-center display-3 py-3">Justificaciones</h1>
+    <div class="container py-2">
+        <form method="GET" action="{% url 'crear_justificacion' %}" class="table table-bordered text-center table-sm align-middle">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Crear Justificación</button>
+        </form>
+        {% if justificaciones %}
+        <table class="table table-bordered text-center table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>ID Justificación</th>
+                    <th>Descripción</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for justificacion in justificaciones %}
+                <tr>
+                    <td>{{justificacion.id_justificacion}}</td>
+                    <td>{{ justificacion.descripcion_justificacion }}</td>
+                    <td><a href="{% url 'justificacion_detalle' justificacion.pk %}" class="btn btn-secondary" >Editar</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <h1 class="text-center">No hay justificaciones para mostrar. Presione el botón "Crear Justificación" para crear la primera justificación.</h1>
+        {% endif %}
+{% endblock %}

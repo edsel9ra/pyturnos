@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <div class="container py-3">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="text-center">Justificación: {{justificacion.id_justificacion}}</h1>
+                <form method="POST" class="text-center card card-body text-center">
+                    {{error}}
+                    {% csrf_token %}
+                    {{form.as_p}}
+                    <button class="btn btn-success">
+                        Actualizar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

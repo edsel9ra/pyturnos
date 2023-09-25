@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="text-center display-3 py-3">Turnos</h1>
+    <div class="container py-2">
+        <form method="GET" action="{% url 'crear_turno' %}" class="table table-bordered text-center table-sm align-middle">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Crear Turno</button>
+        </form>
+        {% if turnos %}
+        <table class="table table-bordered text-center table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>ID Turno</th>
+                    <th>Hora Inicio</th>
+                    <th>Hora Final</th>
+                    <th>Tipo de Turno</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for turno in turnos %}
+                <tr>
+                    <td>{{turno.id_turno}}</td>
+                    <td>{{ turno.hora_inicial|time:"H:i" }}</td>
+                    <td>{{ turno.hora_final|time:"H:i" }}</td>
+                    <td>{{ turno.tipo_turno }}</td>
+                    <td><a href="{% url 'turno_detalle' turno.pk %}" class="btn btn-secondary" >Editar</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <h1 class="text-center">No hay turnos para mostrar. Presione el botón "Crear Turno", para crear el primer turno.</h1>
+        {% endif %}
+{% endblock %}

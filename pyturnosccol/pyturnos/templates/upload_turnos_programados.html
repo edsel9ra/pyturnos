@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                El archivo debe tener las siguientes caracteristicas antes de ser subido:
+                <ul>
+                    <li>Estar en formato TXT (Archivo de Texto Plano)</li>
+                    <li>La estructura de cada registro debe ser la siguiente:
+                        <ul>
+                            <li>documento del empleado;ID de turno;fecha de turno;ID de la justificación</li>
+                            <li>Por ejemplo: 1123156789;3;2023-09-06;NA</li>
+                        </ul>
+                    </li>
+                    <li>Por cada salto de linea, es un registro nuevo</li>
+                    <li>El archivo no puede quedar con saltos de linea al final</li>
+                </ul>
+                <form method="POST" enctype="multipart/form-data" class="card card-body text-center">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Cargar Archivo </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
