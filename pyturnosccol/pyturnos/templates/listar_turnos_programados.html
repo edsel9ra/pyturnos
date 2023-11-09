@@ -4,7 +4,7 @@
     <h1 class="text-center display-3 py-3">Turnos Programados</h1>
     <div class="container py-5">
         {% if turnos_programados %}
-        <table class="table table-bordered text-center table-sm align-middle">
+        <table class="table table-bordered text-center table-sm align-middle" id="turnosProgramados">
             <thead>
                 <tr>
                     <th>ID Turno</th>
@@ -29,4 +29,12 @@
         {% else %}
             <h1 class="text-center">No hay turnos programados para mostrar, realice una busqueda.</h1>
         {% endif %}
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    // Inicializa DataTables
+    $(document).ready(function() {
+        $('#turnosProgramados').DataTable();
+    });
+</script>
 {% endblock %}

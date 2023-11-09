@@ -3,7 +3,15 @@
 {% block content %}
 <main>
     <div class="container py-3">
-        <h1 class="text-center">Archivo subido exitosamente</h1>
+	<div class="row">
+            <div class="col-md-6 offset-md-3">
+        	<h1 class="text-center">Archivo subido exitosamente</h1>
+		<div class="table table-bordered text-center table-sm align-middle">
+			<a href="{% if request.META.HTTP_REFERER %}{{ request.META.HTTP_REFERER }}{% else %}{% url 'home' %}{% endif %}">
+            		<button class="btn btn-success">Volver</button></a>
+		</div>
+	    </div>
+        </div>
     </div>
 </main>
 {% endblock %}

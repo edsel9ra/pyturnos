@@ -4,6 +4,8 @@ from django.db import models
 from datetime import date, timedelta, datetime
 
 # Modelo de Departamentos
+
+
 class Departamentos(models.Model):
     id_departamento = models.CharField(primary_key=True, max_length=3)
     nombre_departamento = models.CharField(
@@ -19,6 +21,8 @@ class Departamentos(models.Model):
         return self.nombre_departamento
 
 # Modelo de Grupos Empleados
+
+
 class GruposEmpleados(models.Model):
     id_grupo_emp = models.AutoField(primary_key=True)
     descripcion_grupo = models.CharField(
@@ -32,6 +36,8 @@ class GruposEmpleados(models.Model):
         return self.descripcion_grupo
 
 # Modelo de Centros de Costos
+
+
 class CentrosCostos(models.Model):
     id_centro = models.CharField(
         verbose_name='ID Centro de Costo', primary_key=True, max_length=8)
@@ -50,16 +56,18 @@ class CentrosCostos(models.Model):
 # Modelo de Cargos (Para futura implementación)
 
 # Modelo de Empleados(Colaboradores)
+
+
 class Empleados(models.Model):
 
-    #Implementar modelo SEXOS (Para futura implementación)
+    # Implementar modelo SEXOS (Para futura implementación)
     SEXO_CHOICES = {
         ('M', 'Masculino'),
         ('F', 'Femenino'),
         ('NB', 'No Binario'),
     }
 
-    #Implementar modelo ESTADOS (Para futura implementación)
+    # Implementar modelo ESTADOS (Para futura implementación)
     ESTADOS_CHOICES = {
         ('A', 'Activo'),
         ('I', 'Inactivo'),
@@ -84,7 +92,7 @@ class Empleados(models.Model):
         Departamentos, on_delete=models.CASCADE, verbose_name="Departamento")
     centro_costo = models.ForeignKey(
         CentrosCostos, on_delete=models.CASCADE, verbose_name="Centro de Costos", default=None)
-    #cargo (para futura implementación)
+    # cargo (para futura implementación)
     estado = models.CharField(
         verbose_name="Estado Empleado", max_length=1, choices=ESTADOS_CHOICES)
     fecha_ingreso_empleado = models.DateField(verbose_name="Fecha Ingreso")
@@ -101,6 +109,8 @@ class Empleados(models.Model):
         return '{} {} {}'.format(self.nombre_empleado, self.apellido_paterno_empleado, self.apellido_materno_empleado)
 
 # Modelo de Turnos
+
+
 class Turnos(models.Model):
     TIPO_TURNO_CHOICES = {
         ('ADM', 'Administrativo'),
@@ -122,6 +132,8 @@ class Turnos(models.Model):
         return '({}) [{} - {}]'.format(self.id_turno, self.hora_inicial, self.hora_final)
 
 # Modelo de Justificaciones
+
+
 class Justificaciones(models.Model):
     id_justificacion = models.CharField(
         verbose_name='Código', primary_key=True, max_length=3)
@@ -136,6 +148,8 @@ class Justificaciones(models.Model):
         return self.descripcion_justificacion
 
 # Modelo de Turnos Programados
+
+
 class TurnosProgramados(models.Model):
 
     id_turno_programado = models.AutoField(primary_key=True)
@@ -150,27 +164,37 @@ class TurnosProgramados(models.Model):
     class Meta:
         verbose_name = "Turno Programado"
         verbose_name_plural = "Turnos Programados"
-    
+
     def __str__(self):
         return '{} [Fecha: {}]'.format(self.empleado.id_empleado, self.fecha_turno)
 
 # Modelo de Registros
+
+
 class Registros(models.Model):
     id_registro = models.AutoField(primary_key=True)
-    empleado = models.ForeignKey(Empleados, on_delete=models.CASCADE, verbose_name="Empleado")
-    turno_programado = models.ForeignKey(TurnosProgramados, on_delete=models.CASCADE, verbose_name="Turno Programado")
-    turno = models.ForeignKey(Turnos, on_delete=models.SET_NULL, verbose_name="Turno", null=True, blank=True)
-    justificacion = models.ForeignKey(Justificaciones, on_delete=models.SET_NULL, verbose_name="Justificacion", null=True, blank=True)
+    empleado = models.ForeignKey(
+        Empleados, on_delete=models.CASCADE, verbose_name="Empleado")
+    turno_programado = models.ForeignKey(
+        TurnosProgramados, on_delete=models.CASCADE, verbose_name="Turno Programado")
+    turno = models.ForeignKey(
+        Turnos, on_delete=models.SET_NULL, verbose_name="Turno", null=True, blank=True)
+    justificacion = models.ForeignKey(
+        Justificaciones, on_delete=models.SET_NULL, verbose_name="Justificacion", null=True, blank=True)
     fecha_registro = models.DateField(null=True, blank=True)
     fecha_registro_entrada = models.DateField(null=True, blank=True)
     hora_registro_entrada = models.TimeField(null=True, blank=True)
     fecha_registro_salida = models.DateField(null=True, blank=True)
     hora_registro_salida = models.TimeField(null=True, blank=True)
     # Campos para las observaciones segun los datos del registro
-    obs_marcacion = models.CharField(verbose_name="Marcación", max_length=50, blank=True, null=True)
-    obs_entrada = models.CharField(verbose_name="Entrada", max_length=50, blank=True, null=True)
-    obs_salida = models.CharField(verbose_name="Salida", max_length=50, blank=True, null=True)
-    analisis = models.CharField(verbose_name="Análisis", max_length=50, blank=True, null=True)
+    obs_marcacion = models.CharField(
+        verbose_name="Marcación", max_length=50, blank=True, null=True)
+    obs_entrada = models.CharField(
+        verbose_name="Entrada", max_length=50, blank=True, null=True)
+    obs_salida = models.CharField(
+        verbose_name="Salida", max_length=50, blank=True, null=True)
+    analisis = models.CharField(
+        verbose_name="Análisis", max_length=50, blank=True, null=True)
 
     # Función que permite asignar el turno en base a la hora que ingresa y la hora que sale
     def asignar_turno(self):
@@ -183,7 +207,7 @@ class Registros(models.Model):
         elif turnos_filtrados_b.exists():
             self.turno = turnos_filtrados_b.first()
         else:
-            self.turno = None
+            self.turno = self.turno_programado.turno
 
     # Función que permite guardar las observaciones y el análisis de los datos del biométrico
     def save(self, *args, **kwargs):
@@ -212,33 +236,55 @@ class Registros(models.Model):
             self.obs_salida = 'OK'
             self.analisis = 'OK'
             self.asignar_turno()
-        elif (self.fecha_registro_entrada is None and self.hora_registro_entrada is None) and (self.fecha_registro_salida is None and self.hora_registro_salida is None) and (turno_programado is not None and turno_programado == 'AU'):
+        elif (self.fecha_registro_entrada is None and self.hora_registro_entrada is None) and (self.fecha_registro_salida is None and self.hora_registro_salida is None) and (turno_programado is not None and turno_programado != 'L'):
             self.obs_marcacion = 'Sin marcación'
             self.obs_entrada = 'No marcó entrada'
             self.obs_salida = 'No marcó salida'
+            self.justificacion = Justificaciones.objects.get(id_justificacion='ANJ')
             self.analisis = 'Ausentismo'
-            self.turno = Turnos.objects.get(id_turno='AU')
+            self.turno = Turnos.objects.get(id_turno='AUS')
             self.fecha_registro = self.turno_programado.fecha_turno
-        elif (self.fecha_registro_entrada is None and self.hora_registro_entrada is None) and (self.fecha_registro_salida is None and self.hora_registro_salida is None) and (turno_programado is not None and turno_programado == 'DL'):
+        elif (self.fecha_registro_entrada is None and self.hora_registro_entrada is None) and (self.fecha_registro_salida is None and self.hora_registro_salida is None) and (turno_programado is not None and turno_programado == 'L'):
             self.obs_marcacion = ''
             self.obs_entrada = ''
             self.obs_salida = ''
             self.analisis = 'Programado Día Libre'
-            self.turno = Turnos.objects.get(id_turno='DL')
+            self.turno = Turnos.objects.get(id_turno='L')
             self.fecha_registro = self.turno_programado.fecha_turno
-        elif (self.fecha_registro_entrada is None and self.hora_registro_entrada is None) and (self.fecha_registro_salida is None and self.hora_registro_salida is None) and (turno_programado is not None and turno_programado == 'VC'):
+        elif (self.fecha_registro_entrada is None and self.hora_registro_entrada is None) and (self.fecha_registro_salida is None and self.hora_registro_salida is None) and (turno_programado is not None and turno_programado == 'VCA'):
             self.obs_marcacion = ''
             self.obs_entrada = ''
             self.obs_salida = ''
             self.analisis = 'Vacaciones'
-            self.turno = Turnos.objects.get(id_turno='VC')
+            self.turno = Turnos.objects.get(id_turno='VCA')
             self.fecha_registro = self.turno_programado.fecha_turno
-        elif (self.fecha_registro_entrada is None and self.hora_registro_entrada is None) and (self.fecha_registro_salida is None and self.hora_registro_salida is None) and (turno_programado is not None and turno_programado == 'LI'):
+        elif (self.fecha_registro_entrada is None and self.hora_registro_entrada is None) and (self.fecha_registro_salida is None and self.hora_registro_salida is None) and (turno_programado is not None and turno_programado == 'LIC'):
             self.obs_marcacion = ''
             self.obs_entrada = ''
             self.obs_salida = ''
             self.analisis = 'Licencia/Incapacidad'
-            self.turno = Turnos.objects.get(id_turno='LI')
+            self.turno = Turnos.objects.get(id_turno='LIC')
+            self.fecha_registro = self.turno_programado.fecha_turno
+        elif (self.fecha_registro_entrada is None and self.hora_registro_entrada is None) and (self.fecha_registro_salida is None and self.hora_registro_salida is None) and (turno_programado is not None and turno_programado == 'IEG'):
+            self.obs_marcacion = ''
+            self.obs_entrada = ''
+            self.obs_salida = ''
+            self.analisis = 'Incapacidad por Enfermedad General'
+            self.turno = Turnos.objects.get(id_turno='IEG')
+            self.fecha_registro = self.turno_programado.fecha_turno
+        elif (self.fecha_registro_entrada is None and self.hora_registro_entrada is None) and (self.fecha_registro_salida is None and self.hora_registro_salida is None) and (turno_programado is not None and turno_programado == 'LNR'):
+            self.obs_marcacion = ''
+            self.obs_entrada = ''
+            self.obs_salida = ''
+            self.analisis = 'Licencia no Renumerada'
+            self.turno = Turnos.objects.get(id_turno='LNR')
+            self.fecha_registro = self.turno_programado.fecha_turno
+        elif (self.fecha_registro_entrada is None and self.hora_registro_entrada is None) and (self.fecha_registro_salida is None and self.hora_registro_salida is None) and (turno_programado is not None and turno_programado == 'LRM'):
+            self.obs_marcacion = ''
+            self.obs_entrada = ''
+            self.obs_salida = ''
+            self.analisis = 'Licencia Renumerada'
+            self.turno = Turnos.objects.get(id_turno='LRM')
             self.fecha_registro = self.turno_programado.fecha_turno
         elif (self.fecha_registro_entrada is not None and self.hora_registro_entrada is not None) and (((hora_inicio_turno_str >= hora_entrada_formateada) or (hora_inicio_turno_str <= hora_entrada_formateada)) and hora_entrada_formateada <= hora_inicio_gracia) and (self.fecha_registro_salida is None and self.hora_registro_salida is None):
             self.obs_marcacion = 'Solamente marcó entrada'

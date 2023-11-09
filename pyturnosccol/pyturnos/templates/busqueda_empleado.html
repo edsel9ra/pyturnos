@@ -32,13 +32,13 @@
     <div class="container py-5 table-responsive">
         {% if registros %}
         <h1 class="text-center">Resultados de Busqueda</h1>
-        <table class="table table-bordered text-center table-sm align-middle">
+        <table class="table table-bordered text-center table-sm align-middle" id="tablaRegistros">
             <thead class="table-dark align-middle">
                 <tr>
                     <!--<th>Registro</th>-->
                     <th>Documento</th>
                     <th>Colaborador</th>
-                    <!--<th>Apellidos</th>-->
+                    <th>Centro de Costo</th>
                     <th>Turno Programado</th>
                     <th>Turno Ingreso</th>
                     <th>Entrada</th>
@@ -55,6 +55,7 @@
                 <tr>
                     <td>{{ registro.empleado.id_empleado }}</td>
                     <td>{{ registro.empleado.nombre_empleado }} {{ registro.empleado.apellido_paterno_empleado }} {{registro.empleado.apellido_materno_empleado}}</td>
+		    <td>{{ registro.empleado.centro_costo }}</td>
                     <td>{{ registro.turno_programado.fecha_turno|date:"d-m-Y" }} / {{ registro.turno_programado.turno.hora_inicial|time:"H:i" }} - {{ registro.turno_programado.turno.hora_final|time:"H:i" }}</td>
                     <td>{{ registro.turno }}</td>
                     <td>Fecha: {{ registro.fecha_registro_entrada|date:"d-m-Y" }}<br>Hora: {{registro.hora_registro_entrada|time:"H:i"}}</td>
@@ -92,4 +93,12 @@
         {% endif %}
     </div>
 </main>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    // Inicializa DataTables
+    $(document).ready(function() {
+        $('#tablaRegistros').DataTable();
+    });
+</script>
 {% endblock %}

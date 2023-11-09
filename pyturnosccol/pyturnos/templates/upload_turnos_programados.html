@@ -11,7 +11,7 @@
                     <li>La estructura de cada registro debe ser la siguiente:
                         <ul>
                             <li>documento del empleado;ID de turno;fecha de turno;ID de la justificación</li>
-                            <li>Por ejemplo: 1123156789;3;2023-09-06;NA</li>
+                            <li>Por ejemplo: 1123156789;DH5;2023-09-06;NA</li>
                         </ul>
                     </li>
                     <li>Por cada salto de linea, es un registro nuevo</li>
@@ -20,7 +20,7 @@
                 <form method="POST" enctype="multipart/form-data" class="card card-body text-center">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Cargar Archivo </button>
+                    <button type="submit" class="btn btn-primary">Cargar Archivo</button>
                 </form>
             </div>
         </div>

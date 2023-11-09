@@ -29,12 +29,13 @@
         {% if turnos_programados %}
         <div class="container py-5">
             <h1 class="text-center">Resultados de Busqueda</h1>
-            <table class="table table-bordered text-center table-sm align-middle">
+            <table class="table table-bordered text-center table-sm align-middle" id="tablaTurnos">
                 <thead>
                     <tr>
                         <th>ID Turno</th>
                         <th>Empleado</th>
                         <th>Nombre</th>
+			<th>Centro Costo</th>
                         <th>Turno Programado</th>
                         <th>Fecha Turno</th>
                         <th>Justificación</th>
@@ -46,6 +47,7 @@
                         <td>{{turno.id_turno_programado}}</td>
                         <td>{{ turno.empleado.id_empleado }}</td>
                         <td>{{ turno.empleado.nombre_empleado }} {{ turno.empleado.apellido_paterno_empleado }} {{ turno.empleado.apellido_materno_empleado }}</td>
+			<td>{{ turno.empleado.centro_costo }}</td>
                         <td>{{ turno.turno }}</td>
                         <td>{{ turno.fecha_turno|date:"d-m-Y" }}</td>
                         <td>{{ turno.justificacion }}</td>
@@ -58,4 +60,12 @@
         {% endif %}
     </div>
 </main>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    // Inicializa DataTables
+    $(document).ready(function() {
+        $('#tablaTurnos').DataTable();
+    });
+</script>
 {% endblock %}

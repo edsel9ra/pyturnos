@@ -14,10 +14,14 @@ from openpyxl import Workbook
 import json
 
 # Basic
+
+
 def home(request):
     return render(request, 'home.html')
 
-#
+# Crear usuario
+
+
 def signup(request):
     if request.method == 'GET':
         return render(request, 'signup.html', {
@@ -42,10 +46,13 @@ def signup(request):
         'error': 'Passwords do not match'
     })
 
-#Silir e Ingresar sesión
+# Salir e Ingresar sesión
+
+
 def signout(request):
     logout(request)
     return redirect('home')
+
 
 def signin(request):
     if request.method == 'GET':
@@ -65,6 +72,8 @@ def signin(request):
             return redirect('home')
 
 # CRU REGISTROS
+
+
 @login_required
 def crearRegistro(request):
     if request.method == 'GET':
@@ -82,6 +91,7 @@ def crearRegistro(request):
                 'form': FormRegistro,
                 'error': 'Error al guardar el registro'
             })
+
 
 @login_required
 def listarRegistro(request):
@@ -105,6 +115,8 @@ def detalleRegistro(request, id_registro):
             return render(request, 'registro_detalle.html', {'registro': registro, 'form': form, 'error': 'Error al actualizar el registro'})
 
 # CRU Turnos Programados
+
+
 @login_required
 def crearProgramacion(request):
     if request.method == 'GET':
@@ -149,6 +161,8 @@ def detalleProgramacion(request, id_turno_programado):
             return render(request, 'turnos_programados_detalle.html', {'turno_programado': turno_programado, 'form': form, 'error': 'Error al actualizar la programacion'})
 
 # CRU Turnos
+
+
 @login_required
 def crearTurno(request):
     if request.method == 'GET':
@@ -180,6 +194,7 @@ def detalleTurnos(request, id_turno):
     if request.method == 'GET':
         turno = get_object_or_404(Turnos, pk=id_turno)
         form = FormTurnos(instance=turno)
+        #form.fields['id_turno'].widget.attrs['disabled'] = True
         return render(request, 'turnos_detalle.html', {'turno': turno, 'form': form})
     else:
         try:
@@ -191,6 +206,8 @@ def detalleTurnos(request, id_turno):
             return render(request, 'turnos_detalle.html', {'turno': turno, 'form': form, 'error': 'Error al actualizar la programacion'})
 
 # CRU Justificaciones
+
+
 @login_required
 def crearJustificacion(request):
     if request.method == 'GET':
@@ -210,16 +227,19 @@ def crearJustificacion(request):
                 'error': 'Error al guardar la justificación'
             })
 
+
 @login_required
 def listarJustificaciones(request):
     justificaciones = Justificaciones.objects.order_by('id_justificacion')
     return render(request, 'listar_justificaciones.html', {'justificaciones': justificaciones})
+
 
 @login_required
 def detalleJustificaciones(request, id_justificacion):
     if request.method == 'GET':
         justificacion = get_object_or_404(Justificaciones, pk=id_justificacion)
         form = FormJustificaciones(instance=justificacion)
+        #form.fields['id_justificacion'].widget.attrs['disabled'] = True
         return render(request, 'justificacion_detalle.html', {'justificacion': justificacion, 'form': form})
     else:
         try:
@@ -234,6 +254,8 @@ def detalleJustificaciones(request, id_justificacion):
 # CRU Empleado (futura implementación)
 
 # Buscar Registros
+
+
 @login_required
 def buscarFechaPorRango(request):
     registros = None
@@ -248,6 +270,7 @@ def buscarFechaPorRango(request):
             fecha_registro__range=[fecha_inicial, fecha_final])
 
     return render(request, 'buscar_fecha.html', {'registros': registros})
+
 
 @login_required
 def buscarEmpleado(request):
@@ -265,6 +288,7 @@ def buscarEmpleado(request):
 
     return render(request, 'busqueda_empleado.html', {'registros': registros})
 
+
 # Buscar Turnos
 @login_required
 def buscarTurnoFecha(request):
@@ -280,6 +304,7 @@ def buscarTurnoFecha(request):
             fecha_turno__range=[fecha_inicial, fecha_final])
 
     return render(request, 'buscar_turnos_fecha.html', {'turnos_programados': turnos_programados})
+
 
 @login_required
 def buscarTurnoEmpleado(request):
@@ -298,6 +323,8 @@ def buscarTurnoEmpleado(request):
     return render(request, 'buscar_turnos_empleado.html', {'turnos_programados': turnos_programados})
 
 # Carga de Archivos TXT
+
+
 @login_required
 def cargarProgramacionTurnos(request):
     if request.method == 'POST':
@@ -315,6 +342,7 @@ def cargarProgramacionTurnos(request):
     else:
         form = UploadTextForm()
     return render(request, 'upload_turnos_programados.html', {'form': form})
+
 
 @login_required
 def cargarRegistros(request):
@@ -356,6 +384,8 @@ def cargarRegistros(request):
 
 # EXPORTAR INFORMACION
 # Exportar datos filtrados por rango de fecha a Excel
+
+
 @login_required
 def exportarDatosRangoFechaExcel(request):
     fecha_inicial = request.GET.get('fecha_inicial')
@@ -368,23 +398,25 @@ def exportarDatosRangoFechaExcel(request):
     workbook = Workbook()
     sheet = workbook.active
 
-    headers = ['documento', 'id_turno_programado', 'turno_ingreso', 'fecha_entrada', 'hora_entrada',
+    headers = ['documento', 'centro_costo', 'id_turno_programado', 'turno_ingreso', 'fecha_entrada', 'hora_entrada',
                'fecha_salida', 'hora_salida', 'justificacion', 'marcacion', 'entrada', 'salida', 'analisis']
     sheet.append(headers)
 
     for registro in registros:
-        row_data = [registro.empleado.id_empleado, registro.turno_programado.id_turno_programado, registro.turno.id_turno, registro.fecha_registro_entrada, registro.hora_registro_entrada, registro.fecha_registro_salida,
+        row_data = [registro.empleado.id_empleado, registro.empleado.centro_costo.descripcion_centro, registro.turno_programado.id_turno_programado, registro.turno.id_turno, registro.fecha_registro_entrada, registro.hora_registro_entrada, registro.fecha_registro_salida,
                     registro.hora_registro_salida, registro.turno_programado.justificacion.descripcion_justificacion, registro.obs_marcacion, registro.obs_entrada, registro.obs_salida, registro.analisis]
         sheet.append(row_data)
 
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=registros_fecha.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=registros_'+fecha_inicial+'_'+fecha_final+'.xlsx'
     workbook.save(response)
 
     return response
 
 # Exportar datos filtrados por colaborador y fecha especifica a Excel
+
+
 @login_required
 def exportarDatosEmpFechaExcel(request):
     id_empleado = request.GET.get('id_empleado')
@@ -398,23 +430,25 @@ def exportarDatosEmpFechaExcel(request):
     workbook = Workbook()
     sheet = workbook.active
 
-    headers = ['documento', 'id_turno_programado', 'turno_ingreso', 'fecha_entrada', 'hora_entrada',
+    headers = ['documento', 'centro_costo', 'id_turno_programado', 'turno_ingreso', 'fecha_entrada', 'hora_entrada',
                'fecha_salida', 'hora_salida', 'justificacion', 'marcacion', 'entrada', 'salida', 'analisis']
     sheet.append(headers)
 
     for registro in registros:
-        row_data = [registro.empleado.id_empleado, registro.turno_programado.id_turno_programado, registro.turno.id_turno, registro.fecha_registro_entrada, registro.hora_registro_entrada, registro.fecha_registro_salida,
+        row_data = [registro.empleado.id_empleado, registro.empleado.centro_costo.descripcion_centro, registro.turno_programado.id_turno_programado, registro.turno.id_turno, registro.fecha_registro_entrada, registro.hora_registro_entrada, registro.fecha_registro_salida,
                     registro.hora_registro_salida, registro.turno_programado.justificacion.descripcion_justificacion, registro.obs_marcacion, registro.obs_entrada, registro.obs_salida, registro.analisis]
         sheet.append(row_data)
 
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=registros_empleado_fecha.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=registros_' +registro.empleado.id_empleado+'_'+fecha_inicial+'_'+fecha_final+'.xlsx'
     workbook.save(response)
 
     return response
 
 # Exportar turnos filtrados por rango de fecha a Excel
+
+
 @login_required
 def exportarTurnosRangoFechaExcel(request):
     fecha_inicial = request.GET.get('fecha_inicial')
@@ -427,23 +461,25 @@ def exportarTurnosRangoFechaExcel(request):
     workbook = Workbook()
     sheet = workbook.active
 
-    headers = ['id_turno', 'documento', 'nombre', 'primer_apellido', 'segundo_apellido',
+    headers = ['id_turno', 'documento', 'nombre', 'primer_apellido', 'segundo_apellido', 'centro_costo',
                'turno_asignado', 'hora_inicio_turno', 'hora_fin_turno', 'fecha_turno_asignado', 'justificacion']
     sheet.append(headers)
 
     for turno in turnos:
         row_data = [turno.id_turno_programado, turno.empleado.id_empleado, turno.empleado.nombre_empleado, turno.empleado.apellido_paterno_empleado,
-                    turno.empleado.apellido_materno_empleado, turno.turno.id_turno, turno.turno.hora_inicial, turno.turno.hora_final, turno.fecha_turno, turno.justificacion.descripcion_justificacion]
+                    turno.empleado.apellido_materno_empleado, turno.empleado.centro_costo.descripcion_centro, turno.turno.id_turno, turno.turno.hora_inicial, turno.turno.hora_final, turno.fecha_turno, turno.justificacion.descripcion_justificacion]
         sheet.append(row_data)
 
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=turnos_fecha.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=turnos_'+fecha_inicial+'_'+fecha_final+'.xlsx'
     workbook.save(response)
 
     return response
 
 # Exportar datos filtrados por colaborador y fecha especifica a Excel
+
+
 @login_required
 def exportarTurnosEmpFechaExcel(request):
     id_empleado = request.GET.get('id_empleado')
@@ -457,27 +493,29 @@ def exportarTurnosEmpFechaExcel(request):
     workbook = Workbook()
     sheet = workbook.active
 
-    headers = ['id_turno', 'documento', 'nombre', 'primer_apellido', 'segundo_apellido',
+    headers = ['id_turno', 'documento', 'nombre', 'primer_apellido', 'segundo_apellido', 'centro_costo',
                'turno_asignado', 'hora_inicio_turno', 'hora_fin_turno', 'fecha_turno_asignado', 'justificacion']
     sheet.append(headers)
 
     for turno in turnos:
         row_data = [turno.id_turno_programado, turno.empleado.id_empleado, turno.empleado.nombre_empleado, turno.empleado.apellido_paterno_empleado,
-                    turno.empleado.apellido_materno_empleado, turno.turno.id_turno, turno.turno.hora_inicial, turno.turno.hora_final, turno.fecha_turno, turno.justificacion.descripcion_justificacion]
+                    turno.empleado.apellido_materno_empleado, turno.empleado.centro_costo.descripcion_centro, turno.turno.id_turno, turno.turno.hora_inicial, turno.turno.hora_final, turno.fecha_turno, turno.justificacion.descripcion_justificacion]
         sheet.append(row_data)
 
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=turnos_empleado_fecha.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=turnos_' +turno.empleado.id_empleado+'_'+fecha_inicial+'_'+fecha_final+'.xlsx'
     workbook.save(response)
 
     return response
 
-#Permite obtener los turnos programados de un empleado en especifico
+# Permite obtener los turnos programados de un empleado en especifico
+
+
 @login_required
 def get_turnos_programados(_request, empleado_id):
     try:
-        #empleado_id = request.GET.get('empleado')
+        # empleado_id = request.GET.get('empleado')
         turnos_programados = TurnosProgramados.objects.filter(
             empleado_id=empleado_id)
         if (len(turnos_programados) > 0):
